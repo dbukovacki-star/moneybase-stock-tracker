@@ -4,6 +4,19 @@ A real-time stock price tracker built as a senior Angular developer hiring task 
 
 ---
 
+## Screenshots
+
+### Desktop
+![Desktop view](docs/screenshot-desktop.png)
+
+### Tablet
+![Tablet view](docs/screenshot-tablet.png)
+
+### Mobile
+![Mobile view](docs/screenshot-mobile.png)
+
+---
+
 ## Features
 
 - **Real-time updates** — live prices streamed over WebSocket from Finnhub
@@ -126,6 +139,10 @@ moneybase-stock-tracker/
 │   ├── server.js            # Node.js WS server — proxies Finnhub to Angular clients
 │   ├── .env.example         # Copy to .env and add FINNHUB_API_KEY
 │   └── package.json
+├── docs/
+│   ├── screenshot-desktop.png
+│   ├── screenshot-tablet.png
+│   └── screenshot-mobile.png
 └── src/
     └── app/
         ├── models/
