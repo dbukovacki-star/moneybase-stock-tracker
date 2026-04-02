@@ -1,0 +1,59 @@
+.dashboard {
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  background: #f0f2f5;
+}
+
+// ---------- Header ----------
+.dashboard__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.dashboard__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard__brand-icon {
+  font-size: 2rem;
+}
+
+.dashboard__brand-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #1a252f;
+}
+
+.dashboard__hint {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+// ---------- Responsive grid ----------
+// Mobile: 1 column
+// Tablet (≥600px): 2 columns
+// Desktop (≥1024px): 4 columns
+
+.dashboard__grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}

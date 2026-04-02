@@ -1,0 +1,17 @@
+<section class="dashboard">
+  <header class="dashboard__header">
+    <div class="dashboard__brand">
+      <span class="dashboard__brand-icon">📈</span>
+      <span class="dashboard__brand-title">Stock Tracker</span>
+    </div>
+    <p class="dashboard__hint">Click a card to pause / resume updates</p>
+  </header>
+
+  <div class="dashboard__grid">
+    <app-stock-card
+      *ngFor="let stock of stocks$ | async; trackBy: trackBySymbol"
+      [stock]="stock"
+      (toggle)="onToggle($event)"
+    />
+  </div>
+</section>

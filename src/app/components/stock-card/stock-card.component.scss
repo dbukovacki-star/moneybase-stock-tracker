@@ -1,0 +1,189 @@
+@use 'sass:color';
+
+// ---------- Colour tokens ----------
+$color-up:      #27ae60;
+$color-up-bg:   #e9f7ef;
+$color-down:    #c0392b;
+$color-down-bg: #fdedec;
+$color-off:     #7f8c8d;
+$color-off-bg:  #ecf0f1;
+$color-neutral-bg: #ffffff;
+$color-border:  rgba(0, 0, 0, 0.08);
+
+// ---------- Card base ----------
+.card {
+  position: relative;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid $color-border;
+  background: $color-neutral-bg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  // ---------- State modifiers ----------
+  &--up {
+    background: $color-up-bg;
+    border-color: $color-up;
+
+    .card__price-value,
+    .card__direction-arrow { color: $color-up; }
+  }
+
+  &--down {
+    background: $color-down-bg;
+    border-color: $color-down;
+
+    .card__price-value,
+    .card__direction-arrow { color: $color-down; }
+  }
+
+  &--off {
+    background: $color-off-bg;
+    border-color: color.adjust($color-off-bg, $lightness: -10%);
+    opacity: 0.75;
+    pointer-events: all; // still clickable to re-enable
+
+    .card__symbol,
+    .card__name,
+    .card__price-value,
+    .card__stat-label,
+    .card__stat-value { color: $color-off; }
+  }
+
+  &--neutral {
+    background: $color-neutral-bg;
+  }
+}
+
+// ---------- Header row ----------
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.card__symbol {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2c3e50;
+}
+
+.card__toggle-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: $color-up;
+  color: #fff;
+  transition: background 0.3s;
+
+  &--off {
+    background: $color-off;
+  }
+}
+
+// ---------- Company name ----------
+.card__name {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ---------- Current price ----------
+.card__price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  &--off .card__price-value { color: $color-off; }
+}
+
+.card__price-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  transition: color 0.3s;
+}
+
+.card__direction-arrow {
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+// ---------- Stats grid ----------
+.card__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.card__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #95a5a6;
+}
+
+.card__stat-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+// ---------- 52-week stats: hidden on mobile ----------
+.card__stat--desktop {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
+}
+
+// ---------- Disabled overlay ----------
+.card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($color-off-bg, 0.5);
+  border-radius: 12px;
+  pointer-events: none;
+
+  span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: $color-off;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid color.adjust($color-off-bg, $lightness: -15%);
+  }
+}

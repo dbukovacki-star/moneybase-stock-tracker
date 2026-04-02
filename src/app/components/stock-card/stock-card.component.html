@@ -1,0 +1,47 @@
+<article class="card" [ngClass]="cardClass" (click)="onToggle()" role="button" [attr.aria-pressed]="stock.active">
+  <div class="card__header">
+    <span class="card__symbol">{{ stock.symbol }}</span>
+    <span class="card__toggle-badge" [class.card__toggle-badge--off]="!stock.active">
+      {{ stock.active ? 'ON' : 'OFF' }}
+    </span>
+  </div>
+
+  <div class="card__name">{{ stock.name }}</div>
+
+  <div class="card__price" [class.card__price--off]="!stock.active">
+    <span class="card__price-value">${{ stock.price | number:'1.2-2' }}</span>
+    <span class="card__direction-arrow" *ngIf="stock.active">
+      <ng-container *ngIf="stock.priceDirection === 'up'">▲</ng-container>
+      <ng-container *ngIf="stock.priceDirection === 'down'">▼</ng-container>
+    </span>
+  </div>
+
+  <div class="card__stats">
+    <div class="card__stat">
+      <span class="card__stat-label">Day High</span>
+      <span class="card__stat-value">${{ stock.dailyHigh | number:'1.2-2' }}</span>
+    </div>
+    <div class="card__stat">
+      <span class="card__stat-label">Day Low</span>
+      <span class="card__stat-value">${{ stock.dailyLow | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- Desktop-only: 52-week data -->
+    <div class="card__stat card__stat--desktop">
+      <span class="card__stat-label">52W High</span>
+      <span class="card__stat-value">
+        {{ stock.weekHigh52 !== null ? ('$' + (stock.weekHigh52 | number:'1.2-2')) : '—' }}
+      </span>
+    </div>
+    <div class="card__stat card__stat--desktop">
+      <span class="card__stat-label">52W Low</span>
+      <span class="card__stat-value">
+        {{ stock.weekLow52 !== null ? ('$' + (stock.weekLow52 | number:'1.2-2')) : '—' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="card__overlay" *ngIf="!stock.active">
+    <span>Updates paused</span>
+  </div>
+</article>
