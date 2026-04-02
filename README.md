@@ -1,59 +1,152 @@
-# MoneybaseStockTracker
+# Moneybase Stock Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+A real-time stock price tracker built as a senior Angular developer hiring task for Calamatta Cuschieri / Moneybase. Displays live price updates for **AAPL, GOOGL, MSFT, and TSLA** via the Finnhub WebSocket API, with a swappable mock service for offline development.
 
-## Development server
+---
 
-To start a local development server, run:
+## Features
+
+- **Real-time updates** — live prices streamed over WebSocket from Finnhub
+- **Mock mode** — fully simulated price feed, no API key required
+- **Toggle ON/OFF** — click any card to pause/resume updates for that stock; frozen cards are visually greyed out and prices stop updating at the service level (RxJS `scan` reducer)
+- **Color-coded cards** — green when price goes up, red when price goes down, grey when paused
+- **Responsive layout** — CSS Grid, 1 column on mobile → 2 on tablet → 4 on desktop
+- **Mobile view** — current price, daily high/low, name
+- **Desktop view** — all of the above plus 52-week high/low
+- **Unit tests** — 95 tests covering services, components, and models (Vitest)
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Angular 21 (standalone components, OnPush CD) |
+| Reactive state | RxJS — `merge`, `scan`, `shareReplay`, `startWith` |
+| Styling | SCSS, CSS Grid, flexbox |
+| Backend | Node.js WebSocket server (`ws` package) |
+| Data source | Finnhub WebSocket + REST API |
+| Tests | Vitest via `@angular/build:unit-test` |
+
+---
+
+## Prerequisites
+
+- **Node.js** v18 or later
+- **npm** v9 or later
+- **Finnhub API key** — free tier at [finnhub.io](https://finnhub.io) *(only needed for real data mode)*
+
+---
+
+## Installation
+
+Install frontend dependencies:
 
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Install backend dependencies:
 
 ```bash
-ng generate component component-name
+cd backend && npm install && cd ..
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
+
+## Running the App
+
+### With real Finnhub data
+
+1. Copy the example env file:
 
 ```bash
-ng generate --help
+cp backend/.env.example backend/.env
 ```
 
-## Building
+2. Open `backend/.env` and add your Finnhub API key:
 
-To build the project run:
+```
+FINNHUB_API_KEY=your_api_key_here
+PORT=3000
+```
+
+3. Start both the WebSocket server and the Angular dev server together:
 
 ```bash
-ng build
+npm run start:all
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### With mock data (no API key needed)
+
+```bash
+npm run start:mock
+```
+
+The app uses `MockStockService` — prices update every 2 seconds with small random fluctuations. No backend server is started.
+
+---
+
+### Available scripts
+
+| Script | Description |
+|---|---|
+| `npm run start:all` | Starts Node.js WS server + Angular dev server concurrently |
+| `npm run start:mock` | Angular only, using mock service (no backend) |
+| `npm run start:server` | Node.js backend server only |
+| `npm run build` | Production build |
+
+---
+
+## Running Tests
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+Runs all 95 unit tests with Vitest. Tests cover:
 
-For end-to-end (e2e) testing, run:
+- `StockCardComponent` — CSS classes, data binding, toggle event, overlay visibility
+- `RealStockService` — WebSocket connection, snapshot/trade/refresh messages, toggle stops/resumes updates at the RxJS level, auto-reconnect
+- `MockStockService` — tick behavior, toggle freezes prices, dailyHigh/Low tracking, interface compliance
+- `StockDashboardComponent` — card rendering, lifecycle hooks, toggle delegation
+- `Stock model` — shape validation, WsMessage variants
 
-```bash
-ng e2e
+---
+
+## Project Structure
+
+```
+moneybase-stock-tracker/
+├── backend/
+│   ├── server.js            # Node.js WS server — proxies Finnhub to Angular clients
+│   ├── .env.example         # Copy to .env and add FINNHUB_API_KEY
+│   └── package.json
+└── src/
+    └── app/
+        ├── models/
+        │   └── stock.model.ts           # Stock, StockUpdate, WsMessage interfaces
+        ├── services/
+        │   ├── stock.service.interface.ts   # IStockService + STOCK_SERVICE_TOKEN
+        │   ├── real-stock.service.ts        # Connects to Node.js WS, auto-reconnects
+        │   └── mock-stock.service.ts        # Simulated feed, same interface
+        └── components/
+            ├── stock-card/              # Individual stock card (toggle, colors, stats)
+            └── stock-dashboard/         # CSS Grid layout, injects service via token
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Swapping mock vs real service
 
-## Additional Resources
+The active service is controlled by a single flag in [`src/environments/environment.ts`](src/environments/environment.ts):
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```ts
+export const environment = {
+  useMock: false, // set to true to use MockStockService
+};
+```
+
+Or use the dedicated npm scripts — `start:mock` uses the `mock` Angular build configuration which replaces the environment file at build time. No code changes required.
